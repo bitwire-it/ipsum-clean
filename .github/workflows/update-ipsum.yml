@@ -22,7 +22,6 @@ jobs:
 
     - name: get ipsum
       run: |
-          rm ipsum.txt
           curl --compressed https://raw.githubusercontent.com/stamparm/ipsum/master/ipsum.txt 2>/dev/null | grep -v "#" | grep -v -E "\s[1-2]$" | cut -f 1 >> ipsum.txt
           
     - uses: stefanzweifel/git-auto-commit-action@v5
