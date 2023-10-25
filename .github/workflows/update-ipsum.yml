@@ -1,0 +1,30 @@
+name: get-ipsum
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+  schedule:
+    - cron: "0 */20 * * *" # UTC
+
+jobs:
+  update-list:
+    runs-on: ubuntu-latest
+
+    permissions:
+      # Give the default GITHUB_TOKEN write permission to commit and push the changed files back to the repository.
+      contents: write
+
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        ref: ${{ github.head_ref }}
+
+    - name: get ipsum
+      run: |
+          rm ipsum.txt
+          curl --compressed https://raw.githubusercontent.com/stamparm/ipsum/master/ipsum.txt 2>/dev/null | grep -v "#" | grep -v -E "\s[1-2]$" | cut -f 1 >> ipsum.txt
+          
+    - uses: stefanzweifel/git-auto-commit-action@v5
+      with:
+        commit_message: Apply update on ipsum.txt
